@@ -18,7 +18,6 @@ class Piece
 
     function __construct()
     {
-        echo "\n\nmaking new Piece\n";
         $this->commands = '';
         $this->notch_depth = WOOD_THICKNESS;
         $this->notch_width = DEFAULT_NOTCH_WIDTH;
@@ -60,17 +59,29 @@ class Piece
         if ($connector == false) {
             $this->commands .= $this->current_coordinates['x'] . ',' . $this->current_coordinates['y'] . "\n";
         } else {
+            if(isset($connector['start']) && isset($connector['end'])){
+                $remainingLength = $connector['end'];
+            }
             $edge_notch_width = 0;
             while ($edge_notch_width < MIN_NOTCH_WIDTH * 2) {
                 if (isset($default_notch_count)) {
                     $default_notch_count -= 2;
                 } else {
-                    $default_notch_count = $this->calculateDefaultNotchCount($length, $this->notch_width);
+                    if(isset($remainingLength)){
+                        $default_notch_count = $this->calculateDefaultNotchCount($remainingLength, $this->notch_width);
+                    }
+                    else{
+                        $default_notch_count = $this->calculateDefaultNotchCount($length, $this->notch_width);
+                    }
                 }
-                $edge_notch_width = $this->calculateEdgeNotchLength($length, $this->notch_width, $default_notch_count, $connector['edge_type']);
+                if(isset($remainingLength)){
+                    $edge_notch_width = $this->calculateEdgeNotchLength($remainingLength, $this->notch_width, $default_notch_count, $connector['edge_type']);
+                }
+                else{
+                    $edge_notch_width = $this->calculateEdgeNotchLength($length, $this->notch_width, $default_notch_count, $connector['edge_type']);
+                }
             }
-            echo '$edge_notch_width - ' . $edge_notch_width . "\n";
-            echo '$default_notch_count - ' . $default_notch_count . "\n";
+
             $hill_notch_width = $this->notch_width + KERF_WIDTH;
             $valley_notch_width = $this->notch_width - KERF_WIDTH;
             if ($connector['edge_type'] == 'hill') {
@@ -177,6 +188,17 @@ class Piece
                     $this->commands .= Helper::getCommand('right', $edge_notch_width);
                 }
                 $this->elevation = 'valley';
+            }
+            if(isset($remainingLength)){
+                if ($direction == 'u') {
+                    $this->commands .= Helper::getCommand('up', $length - $remainingLength);
+                } else if ($direction == 'd') {
+                    $this->commands .= Helper::getCommand('down', $length - $remainingLength);
+                } else if ($direction == 'l') {
+                    $this->commands .= Helper::getCommand('left', $length - $remainingLength);
+                } else if ($direction == 'r') {
+                    $this->commands .= Helper::getCommand('right', $length - $remainingLength);
+                }
             }
         }
 
