@@ -41,13 +41,13 @@ $box_commands .= $bottom->commands;
 
 
 $top = new Piece();
-$top->drawSide($box_depth, 'u', ['edge_type'=>'hill','start'=>0, 'end'=>$front_height], [$back->min_x, $back->min_y - $box_depth - 10]);
+$top->drawSide($box_depth, 'u', ['edge_type'=>'hill'], [$back->min_x, $back->min_y - $box_depth - 10]);
 $top->drawSide($box_width, 'r', ['edge_type'=>'valley' ]);
 $top->drawSide($box_depth, 'd', ['edge_type'=>'hill']);
 $top->drawSide($box_width, 'l');
-$top->drawSide($box_width - 2*WOOD_THICKNESS, 'r', false, [$top->min_x + WOOD_THICKNESS, $top->min_y + WOOD_THICKNESS]);
+$top->drawSide($box_width - (2*WOOD_THICKNESS + KERF_WIDTH), 'r', false, [$top->min_x + WOOD_THICKNESS + KERF_WIDTH, $top->min_y + (2*WOOD_THICKNESS/3)]);
 $top->drawSide(ACRYLIC_THICKNESS, 'u', false);
-$top->drawSide($box_width - 2*WOOD_THICKNESS, 'l', false);
+$top->drawSide($box_width - (2*WOOD_THICKNESS + KERF_WIDTH), 'l', false);
 $top->drawSide(ACRYLIC_THICKNESS, 'd', false);
 
 
